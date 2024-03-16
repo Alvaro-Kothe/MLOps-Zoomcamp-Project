@@ -164,4 +164,4 @@ binaries/
 mlartifacts/
 mlruns/
 artifacts/
-mlflow.db
+*.db
