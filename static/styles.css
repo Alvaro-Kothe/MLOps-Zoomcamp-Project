@@ -1,90 +1,94 @@
 /* Reset some default styles for better consistency */
-body, h1, ul, li, form {
-    margin: 0;
-    padding: 0;
+body,
+h1,
+ul,
+li,
+form {
+  margin: 0;
+  padding: 0;
 }
 
 /* Set a background color and font for the entire page */
 body {
-    background-color: #f0f0f0;
-    font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
 }
 
 /* Style the main container */
 div {
-    background-color: #ffffff;
-    margin: 20px auto;
-    padding: 20px;
-    max-width: 600px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 600px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
 div p {
-    text-align: center;
+  text-align: center;
 }
 
 /* Style the header */
 h1 {
-    font-size: 24px;
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333333;
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333333;
 }
 
 /* Style the form and its elements */
 form {
-    text-align: center;
+  text-align: center;
 }
 
 ul {
-    list-style: none;
+  list-style: none;
 }
 
 li {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 select {
-    padding: 5px;
-    border: 1px solid #cccccc;
-    border-radius: 5px;
-    width: 100%;
-    font-size: 16px;
+  padding: 5px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 16px;
 }
 
 input[type="submit"] {
-    background-color: #007bff;
-    color: #ffffff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 18px;
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
 }
 
 input[type="submit"]:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 button {
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-    margin: 4px auto;
-    transition-duration: 0.4s;
-    cursor: pointer;
-    background-color: #007bff;
-    color: #ffffff;
-    border: 2px solid #008CBA;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  margin: 4px auto;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #ffffff;
+  border: 2px solid #008cba;
 }
 
 button:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
