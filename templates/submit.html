@@ -1,13 +1,26 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <title>Probability</title>
-    </head>
-    <body>
-        <p>The probability of this mushroom being poisonous is {{ pred }}.</p>
+  <head>
+    <title>Probability</title>
+  </head>
+  <body>
+    <p>The probability of this mushroom being poisonous is {{ pred }}.</p>
 
-        <a href="/">
-            <button>New Search</button>
-        </a>
-    </body>
+    <form id="classification-form" hx-post="/confirm_classification">
+      <input type="hidden" name="mushroom_classification" value="{{ pred }}" />
+      {% for key, value in features.items() %}
+      <input type="hidden" name="{{ key }}" value="{{ value }}" />
+      {% endfor %}
+      <label for="confirmation">Was the classification correct?</label>
+      <select id="confirmation" name="confirmation">
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+      <button type="submit">Submit</button>
+    </form>
+
+    <a href="/">
+      <button>New Search</button>
+    </a>
+  </body>
 </html>

@@ -1,10 +1,11 @@
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import FastAPI, Form, Request, Response
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from src import database
 from src.models.utils import get_model
 from src.mushroom import MUSHROOM_CHARACTERISTICS, Mushroom
 from src.prediction.prepare_features import prepare_features
@@ -25,7 +26,7 @@ async def root(request: Request) -> Response:
 
 
 @app.post("/predict", response_class=HTMLResponse)
-def post_predict(
+async def post_predict(
     request: Request,
     cap_shape: Annotated[str, Form()],
     cap_surface: Annotated[str, Form()],
@@ -80,16 +81,48 @@ def post_predict(
 
     pred = model.predict(features)[0]
 
-    context = {"request": request, "pred": pred}
+    context = {"request": request, "features": feature_dict, "pred": pred}
 
     return templates.TemplateResponse("submit.html", context)
 
 
 @app.post("/api/predict", status_code=200)
-def get_prediction(mushroom: Mushroom) -> dict[str, float]:
+async def get_prediction(mushroom: Mushroom) -> dict[str, float]:
     features = prepare_features(mushroom.dict())
 
     pred = model.predict(features)[0]
 
     result = {"poisonous-probability": float(pred)}
     return result
+
+
+@app.post("/confirm_classification", status_code=200, response_class=PlainTextResponse)
+async def confirm_classification(
+    request: Request,
+    mushroom_classification: float = Form(...),
+    confirmation: str = Form(...),
+):
+    form_data = await request.form()
+    is_poisonous = mushroom_classification > 0.5
+    if confirmation == "no":
+        is_poisonous = not is_poisonous
+
+    characteristics: dict[str, Any] = {
+        field: value
+        for field, value in form_data.items()
+        if field in MUSHROOM_CHARACTERISTICS
+    }
+    characteristics["class"] = "p" if is_poisonous else "e"
+    characteristics["id"] = None
+
+    conn = database.create_connection()
+    database.create_table(conn)
+
+    cursor = conn.cursor()
+    insert_query = database.get_insert_query()
+    cursor.execute(insert_query, characteristics)
+
+    conn.commit()
+    conn.close()
+
+    return "Form submitted successfully!"
