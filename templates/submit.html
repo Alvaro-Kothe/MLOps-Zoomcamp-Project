@@ -6,6 +6,7 @@
   <body>
     <p>The probability of this mushroom being poisonous is {{ pred }}.</p>
 
+    {% if get_feedback %}
     <form id="classification-form" hx-post="/confirm_classification">
       <input type="hidden" name="mushroom_classification" value="{{ pred }}" />
       {% for key, value in features.items() %}
@@ -18,6 +19,7 @@
       </select>
       <button type="submit">Submit</button>
     </form>
+    {% endif %}
 
     <a href="/">
       <button>New Search</button>

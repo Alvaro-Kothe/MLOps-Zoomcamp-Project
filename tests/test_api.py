@@ -18,17 +18,14 @@ def mock_encoder():
         yield
 
 
-def test_homepage():
-    client = TestClient(app)
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.template.name == "index.html"
+@pytest.fixture(name="client")
+def get_client():
+    return TestClient(app)
 
 
-def test_predict():
-    client = TestClient(app)
-
-    request_data = {
+@pytest.fixture(name="valid_request_data")
+def get_valid_request_data():
+    return {
         "cap_shape": "x",
         "cap_surface": "s",
         "cap_color": "n",
@@ -53,13 +50,44 @@ def test_predict():
         "habitat": "g",
     }
 
-    response = client.post("/predict", data=request_data)
+
+def test_homepage(client):
+    response = client.get("/")
     assert response.status_code == 200
+    assert response.template.name == "index.html"
 
 
-def test_api():
-    client = TestClient(app)
+def test_predict(valid_request_data, client):
+    response = client.post("/predict", data=valid_request_data)
+    assert response.status_code == 200
+    assert "is 0.5" in response.text
 
+
+def test_feedback_with_db_undefined(valid_request_data, client):
+    with patch("src.api.DATABASE_FILE", None):
+        response = client.post("/predict", data=valid_request_data)
+        assert response.status_code == 200
+        assert '<button type="submit">Submit</button>' not in response.text
+
+
+def test_feedback_with_db_defined(valid_request_data, client):
+    with (
+        patch("src.api.DATABASE_FILE"),
+        patch("src.api.database"),
+    ):
+        response = client.post("/predict", data=valid_request_data)
+        assert response.status_code == 200
+        assert '<button type="submit">Submit</button>' in response.text
+
+        confirm_data = {"confirmation": "yes", "mushroom_classification": 1}
+
+        confirm_response = client.post("/confirm_classification", data=confirm_data)
+        assert confirm_response.status_code == 200
+        assert '<button type="submit">Submit</button>' not in confirm_response.text
+        assert "Form submitted" in confirm_response.text
+
+
+def test_api(client):
     request_data = {
         "cap_shape": "x",
         "cap_surface": "s",
