@@ -11,3 +11,4 @@ NUM_TRIALS = int(os.getenv("NUM_TRIALS") or 10)
 ENCODER_PATH = os.getenv("ENCODER_PATH", "models/enc.pkl")
 LOCAL_MODEL_PATH = os.getenv("LOCAL_MODEL_PATH", "models/model.pkl")
 USE_MLFLOW = os.getenv("USE_MLFLOW", "false").lower() in ("true", "t", "1")
+DATABASE_FILE = os.getenv("DATABASE_FILE") or None

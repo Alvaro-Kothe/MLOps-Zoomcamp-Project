@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from src import database
+from src.env import DATABASE_FILE
 from src.models.utils import get_model
 from src.mushroom import MUSHROOM_CHARACTERISTICS, Mushroom
 from src.prediction.prepare_features import prepare_features
@@ -81,7 +82,13 @@ async def post_predict(
 
     pred = model.predict(features)[0]
 
-    context = {"request": request, "features": feature_dict, "pred": pred}
+    get_feedback = DATABASE_FILE is not None
+    context = {
+        "request": request,
+        "features": feature_dict,
+        "pred": pred,
+        "get_feedback": get_feedback,
+    }
 
     return templates.TemplateResponse("submit.html", context)
 
@@ -102,6 +109,9 @@ async def confirm_classification(
     mushroom_classification: float = Form(...),
     confirmation: str = Form(...),
 ):
+    conn = database.create_connection()
+    assert conn
+
     form_data = await request.form()
     is_poisonous = mushroom_classification > 0.5
     if confirmation == "no":
@@ -115,7 +125,6 @@ async def confirm_classification(
     characteristics["class"] = "p" if is_poisonous else "e"
     characteristics["id"] = None
 
-    conn = database.create_connection()
     database.create_table(conn)
 
     cursor = conn.cursor()

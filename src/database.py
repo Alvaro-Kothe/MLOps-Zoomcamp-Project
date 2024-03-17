@@ -1,11 +1,12 @@
 import sqlite3
 
+from src.env import DATABASE_FILE
 from src.mushroom import MUSHROOM_CHARACTERISTICS
-
-DATABASE_FILE = "mushroom_data.db"
 
 
 def create_connection():
+    if DATABASE_FILE is None:
+        return None
     conn = sqlite3.connect(DATABASE_FILE)
     return conn
 
